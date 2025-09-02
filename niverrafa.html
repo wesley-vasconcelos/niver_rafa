@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Convite Animado – Rafinha 5 anos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --blue:#1e90ff;
+      --blue-deep:#0d6efd;
+      --red:#ef4444;
+      --yellow:#fbbf24;
+      --cream:#fff7e6;
+      --bg:#0b1220;
+      --card:#0f1a31;
+      --text:#e7efff;
+      --muted:#bcd0ff;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 100% -10%, rgba(30,144,255,.25), transparent 60%),
+                                  radial-gradient(1200px 600px at -10% 100%, rgba(239,68,68,.18), transparent 60%),
+                                  linear-gradient(180deg, #0a1227 0%, #0a1220 50%, #09101e 100%);
+      color:var(--text);
+      font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      overflow-x:hidden;
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:28px 18px 40px; position:relative;}
+
+    /* Confete animado ao fundo */
+    .confetti{position:fixed; inset:0; pointer-events:none; overflow:hidden;}
+    .piece{position:absolute; width:10px; height:10px; opacity:.9; border-radius:2px; mix-blend-mode:screen;}
+    .piece:nth-child(3n){border-radius:50%;}
+    @keyframes fall{to{transform:translateY(110vh) rotate(420deg); opacity:.85}}
+
+    header.hero{display:grid; grid-template-columns: 96px 1fr; gap:16px; align-items:center;}
+    .paw{width:96px; height:96px;}
+    .title{line-height:1.05;}
+    .title h1{font-family:"Fredoka", system-ui; font-size: clamp(28px, 5vw, 56px); margin:0; letter-spacing:.5px}
+    .title h1 span{display:inline-block; padding:2px 10px; border-radius:12px; background:linear-gradient(135deg, var(--blue) 0%, #53b2ff 100%); color:white;}
+    .title .age{font-weight:700; color:var(--yellow); text-shadow:0 2px 0 rgba(0,0,0,.25)}
+    .subtitle{margin-top:4px; color:var(--muted); font-size:clamp(14px, 1.9vw, 16px)}
+
+    /* Cartão principal */
+    .card{margin-top:22px; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:18px; box-shadow:0 6px 24px rgba(0,0,0,.4)}
+    .grid{display:grid; grid-template-columns: 1.05fr .95fr; gap:20px}
+    @media (max-width:880px){ .grid{grid-template-columns:1fr} }
+
+    /* Piscina */
+    .pool-wrap{position:relative;}
+    .paw-patrol-animation{
+      position:absolute; inset:0 0 auto 0; height:52%;
+      border-radius:16px 16px 0 0; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg, #87CEEB 0%, #4169E1 100%);
+      border:2px solid #FFD700;
+      animation:pawPatrolShow 6s ease-in-out infinite;
+      z-index:10;
+    }
+    .paw-patrol-characters{
+      display:flex; gap:15px; align-items:center; opacity:0;
+      animation:charactersAppear 6s ease-in-out infinite;
+    }
+    .paw-character{
+      width:45px; height:45px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:24px; background:white; box-shadow:0 4px 12px rgba(0,0,0,.3);
+      animation:bounce 1s ease-in-out infinite alternate;
+    }
+    .paw-character:nth-child(1){background:#FF6B6B; animation-delay:0s;}
+    .paw-character:nth-child(2){background:#4ECDC4; animation-delay:0.2s;}
+    .paw-character:nth-child(3){background:#45B7D1; animation-delay:0.4s;}
+    .paw-character:nth-child(4){background:#96CEB4; animation-delay:0.6s;}
+    .paw-character:nth-child(5){background:#FFEAA7; animation-delay:0.8s;}
+
+    @keyframes pawPatrolShow{
+      0%,20%{transform:translateY(-100%); opacity:0}
+      30%,70%{transform:translateY(0); opacity:1}
+      80%,100%{transform:translateY(-100%); opacity:0}
+    }
+    @keyframes charactersAppear{
+      0%,25%{opacity:0; transform:scale(0.3) rotate(-10deg)}
+      35%,65%{opacity:1; transform:scale(1.1) rotate(0deg)}
+      75%,100%{opacity:0; transform:scale(0.3) rotate(10deg)}
+    }
+    @keyframes bounce{
+      0%{transform:translateY(0)}
+      100%{transform:translateY(-8px)}
+    }
+
+    .pool{height:320px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.1); background:#0d244a; position:relative}
+    .water{position:absolute; inset:0; background: radial-gradient(1200px 500px at -10% -20%, rgba(30,144,255,.35), transparent 60%),
+                                 radial-gradient(1200px 600px at 110% 120%, rgba(83,178,255,.35), transparent 60%),
+                                 repeating-conic-gradient(from 0deg, rgba(255,255,255,.1) 0 15deg, rgba(255,255,255,.05) 15deg 30deg);
+           filter:blur(0.5px); animation: shimmer 6s linear infinite;}
+    @keyframes shimmer{ to { background-position: 2400px 0, -2400px 0, 0 0 } }
+
+    .floaty{position:absolute; left:50%; top:42%; width:120px; height:120px; transform:translate(-50%,-50%); border-radius:50%; background:
+        radial-gradient(circle at 30% 30%, #fff 0 6px, transparent 7px),
+        radial-gradient(circle at 70% 70%, #fff 0 6px, transparent 7px),
+        radial-gradient(circle at 50% 50%, var(--red) 0 50%, transparent 51%),
+        radial-gradient(circle at 50% 50%, transparent 0 32%, rgba(0,0,0,.25) 33% 36%, transparent 37% 100%);
+      box-shadow:0 6px 24px rgba(0,0,0,.45);
+      animation: bob 4s ease-in-out infinite;}
+    @keyframes bob{ 0%,100%{ transform:translate(-50%,-48%) } 50%{ transform:translate(-50%,-52%) }}
+
+    .paws{position:absolute; inset:auto 8px 8px 8px; display:flex; gap:8px; opacity:.85}
+    .pawprint{width:24px; height:24px; filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+
+    /* Info list */
+    .info{display:grid; gap:14px}
+    .row{display:grid; grid-template-columns: 28px 1fr; gap:10px; align-items:start}
+    .badge{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:rgba(30,144,255,.12); color:#cfe2ff; border:1px solid rgba(255,255,255,.1); font-weight:600; font-size:13px}
+    .warn{background:rgba(251,191,36,.14); color:#fff3cd;}
+    .note{font-size:14px; color:var(--muted)}
+
+    .btns{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+    .btn{appearance:none; border:none; padding:10px 14px; border-radius:12px; font-weight:700; cursor:pointer; color:#0a1220; background:linear-gradient(180deg, #ffd86b, #fbbf24); box-shadow:0 6px 18px rgba(251,191,36,.35)}
+    .btn.blue{background:linear-gradient(180deg, #67b3ff, #1e90ff); color:white; box-shadow:0 6px 18px rgba(30,144,255,.35)}
+    .btn.ghost{background:transparent; color:#cfe2ff; border:1px dashed rgba(255,255,255,.25)}
+
+    footer{margin-top:22px; text-align:center; font-size:12px; color:var(--muted)}
+
+    /* Paw prints animadas na borda */
+    .borders{position:fixed; inset:0; pointer-events:none}
+    .trail{position:absolute; width:36px; height:36px; opacity:.14;}
+    @keyframes driftX{ to{ transform:translateX(100vw) rotate(360deg)} }
+    @keyframes driftY{ to{ transform:translateY(100vh) rotate(-360deg)} }
+
+    .pause *[data-animated="true"]{animation-play-state:paused !important}
+  </style>
+</head>
+<body>
+  <div class="confetti" id="confetti"></div>
+  <div class="borders" id="borders"></div>
+
+  <div class="wrap" id="root">
+    <header class="hero">
+      <svg class="paw" viewBox="0 0 64 64" aria-hidden="true">
+        <g fill="url(#g)">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#67b3ff"/>
+              <stop offset="100%" stop-color="#1e90ff"/>
+            </linearGradient>
+          </defs>
+          <circle cx="18" cy="18" r="9" />
+          <circle cx="46" cy="18" r="9" />
+          <circle cx="36" cy="9" r="7" />
+          <circle cx="28" cy="9" r="7" />
+          <path d="M32 26c-9 0-16 6-16 14 0 7 6 12 16 12s16-5 16-12c0-8-7-14-16-14z"/>
+        </g>
+      </svg>
+      <div class="title">
+        <h1><span>Patrulha canina no comando!</span></h1>
+        <div class="subtitle">Convite para o aniversário de <strong>Rafinha</strong>: <span class="age">5 anos</span> 🐾🎉</div>
+      </div>
+    </header>
+
+    <section class="card grid">
+      <div class="pool-wrap">
+        <div class="paw-patrol-animation" data-animated="true">
+          <div class="paw-patrol-characters" data-animated="true">
+            <div class="paw-character">🐕</div>
+            <div class="paw-character">🚁</div>
+            <div class="paw-character">🚒</div>
+            <div class="paw-character">🚓</div>
+            <div class="paw-character">🐾</div>
+          </div>
+        </div>
+        <div class="pool">
+          <div class="water" data-animated="true"></div>
+          <div class="floaty" title="Boia" data-animated="true"></div>
+          <div class="paws">
+            <svg class="pawprint" viewBox="0 0 64 64" aria-hidden="true"><use href="#paw-sym"/></svg>
+            <svg class="pawprint" viewBox="0 0 64 64" aria-hidden="true"><use href="#paw-sym"/></svg>
+            <svg class="pawprint" viewBox="0 0 64 64" aria-hidden="true"><use href="#paw-sym"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="info">
+        <div class="row">
+          <div>📅</div>
+          <div>
+            <div class="badge">Sábado, 18/10/2025</div>
+            <div class="note">Início às <strong>11h</strong></div>
+          </div>
+        </div>
+        <div class="row">
+          <div>📍</div>
+          <div>
+            <div class="badge">Av. Américo Tornero, 468 – Jardim Mauá</div>
+            <div class="note">Mauá/SP – CEP 09340-000</div>
+          </div>
+        </div>
+        <div class="row">
+          <div>🎈</div>
+          <div>
+            <div class="badge">Tema: Patrulha Canina</div>
+            <div class="note">Vem brincar com a gente! 🐶</div>
+          </div>
+        </div>
+        <div class="row">
+          <div>🏊</div>
+          <div>
+            <div class="badge warn">Piscina aquecida</div>
+            <div class="note">Já separa a <strong>roupa de banho</strong>! A <strong>Patrulha Canina</strong> está sempre de olho na piscina para garantir a diversão! 🐾</div>
+          </div>
+        </div>
+        <div class="btns">
+          <button class="btn blue" id="addCal">Salvar no calendário (.ics)</button>
+          <a class="btn" href="https://www.google.com/maps?q=Av.+Am%C3%A9rico+Tornero,+468+-+Jardim+Maua,+Mau%C3%A1+-+SP,+09340-000" target="_blank" rel="noopener">Abrir no mapa</a>
+          <button class="btn ghost" id="copyAddr">Copiar endereço</button>
+          <button class="btn ghost" id="toggleAnim">Pausar animação</button>
+          <button class="btn ghost" id="share">Compartilhar</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>🐾 "Nenhum filhote fica para trás!" – Te esperamos para celebrar com muita diversão!</footer>
+  </div>
+
+  <!-- Símbolo da patinha para reuso -->
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="paw-sym" viewBox="0 0 64 64">
+      <circle cx="18" cy="18" r="9" fill="currentColor"/>
+      <circle cx="46" cy="18" r="9" fill="currentColor"/>
+      <circle cx="36" cy="9" r="7" fill="currentColor"/>
+      <circle cx="28" cy="9" r="7" fill="currentColor"/>
+      <path d="M32 26c-9 0-16 6-16 14 0 7 6 12 16 12s16-5 16-12c0-8-7-14-16-14z" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <script>
+    // Util: gerar confete animado
+    const confettiEl = document.getElementById('confetti');
+    const COLORS = ['#1e90ff','#67b3ff','#fbbf24','#ef4444','#22d3ee'];
+    const PIECES = 60;
+    for(let i=0;i<PIECES;i++){
+      const p=document.createElement('div');
+      p.className='piece';
+      p.dataset.animated = 'true';
+      const size = 6 + Math.random()*10;
+      p.style.width=p.style.height=size+"px";
+      p.style.left=Math.random()*100+"vw";
+      p.style.top= -10 - Math.random()*90 +"vh";
+      p.style.background=COLORS[(Math.random()*COLORS.length)|0];
+      p.style.animation=`fall ${6+Math.random()*8}s linear ${Math.random()*6}s infinite`;
+      p.style.transform=`rotate(${Math.random()*360}deg)`;
+      confettiEl.appendChild(p);
+    }
+
+    // Patinhas nas bordas
+    const borders = document.getElementById('borders');
+    for(let i=0;i<16;i++){
+      const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+      s.setAttribute('viewBox','0 0 64 64');
+      s.classList.add('trail');
+      s.style.left = (Math.random()*100)+"vw";
+      s.style.top = (Math.random()*100)+"vh";
+      s.style.color = i%2? 'rgba(255,255,255,.8)':'rgba(104,163,255,.9)';
+      s.style.animation = (i%2? 'driftX' : 'driftY') + ' ' + (14 + Math.random()*12) + 's linear ' + (Math.random()*8)+'s infinite';
+      s.dataset.animated = 'true';
+      const use = document.createElementNS('http://www.w3.org/2000/svg','use');
+      use.setAttribute('href','#paw-sym');
+      s.appendChild(use);
+      borders.appendChild(s);
+    }
+
+    // Copiar endereço
+    document.getElementById('copyAddr').addEventListener('click', async ()=>{
+      const text = 'Av. Américo Tornero, 468 – Jardim Mauá, Mauá/SP – CEP 09340-000';
+      try{ await navigator.clipboard.writeText(text); toast('Endereço copiado! 📍'); } catch(e){ toast('Não foi possível copiar 😅'); }
+    });
+
+    // Download ICS – 18/10/2025 11:00 America/Sao_Paulo, duração 4h
+    document.getElementById('addCal').addEventListener('click', ()=>{
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Convite Rafinha 5 anos//pt-BR',
+        'CALSCALE:GREGORIAN',
+        'BEGIN:VEVENT',
+        'UID:'+crypto.randomUUID(),
+        'DTSTAMP:'+toICS(new Date()),
+        'DTSTART;TZID=America/Sao_Paulo:20251018T110000',
+        'DURATION:PT4H',
+        'SUMMARY:Aniversário do Rafinha – 5 anos (Patrulha Canina)',
+        'LOCATION:Av. Américo Tornero\, 468 – Jardim Mauá\, Mauá/SP – CEP 09340-000',
+        'DESCRIPTION:Início às 11h. Piscina aquecida! Levar roupa de banho. Se o tempo estiver ruim\, a piscina é coberta; se fizer sol\, o teto abre. 🐾',
+        'END:VEVENT',
+        'END:VCALENDAR' ].join('\r\n');
+      const blob = new Blob([ics], {type:'text/calendar'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'Convite-Rafinha-5anos.ics';
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 2000);
+      toast('Evento adicionado ao seu calendário 📅');
+    });
+
+    // Compartilhar
+    document.getElementById('share').addEventListener('click', async ()=>{
+      const data = {title:'Aniversário do Rafinha – 5 anos', text:'Vem para a festa! Sábado, 18/10/2025 às 11h. Piscina aquecida. Endereço: Av. Américo Tornero, 468 – Jardim Mauá, Mauá/SP.', url: location.href};
+      if(navigator.share){ try{ await navigator.share(data); } catch(e){} } else { toast('Compartilhamento não suportado neste dispositivo'); }
+    });
+
+    // Pausar/retomar animações
+    let paused=false;
+    document.getElementById('toggleAnim').addEventListener('click', (ev)=>{
+      paused = !paused;
+      document.body.classList.toggle('pause', paused);
+      ev.currentTarget.textContent = paused ? 'Retomar animação' : 'Pausar animação';
+      toast(paused? 'Animação pausada ⏸️' : 'Animação retomada ▶️');
+    });
+
+    function toICS(d){
+      const pad=n=>String(n).padStart(2,'0');
+      return d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+'T'+pad(d.getUTCHours())+pad(d.getUTCMinutes())+pad(d.getUTCSeconds())+'Z';
+    }
+
+    // Mini toast
+    const toast=(msg)=>{
+      let t=document.getElementById('toast');
+      if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t);
+        Object.assign(t.style,{position:'fixed',left:'50%',bottom:'22px',transform:'translateX(-50%)',background:'rgba(0,0,0,.7)',color:'#fff',padding:'10px 14px',borderRadius:'12px',backdropFilter:'blur(4px)',boxShadow:'0 8px 22px rgba(0,0,0,.4)',fontSize:'13px',zIndex:9999,opacity:0,transition:'opacity .25s'});
+      }
+      t.textContent=msg; t.style.opacity=1; clearTimeout(window.__t);
+      window.__t=setTimeout(()=>t.style.opacity=0, 1800);
+    }
+  </script>
+</body>
+</html>
