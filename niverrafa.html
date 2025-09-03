@@ -272,70 +272,144 @@
     const musicToggle = document.getElementById('musicToggle');
     let isPlaying = false;
 
-    // Tentar tocar música automaticamente quando a página carrega
+    // Tocar música automaticamente quando a página carrega
     document.addEventListener('DOMContentLoaded', () => {
-      // Criar um áudio com tema da Patrulha Canina usando Web Audio API
+      // Criar a Música da Amizade da Patrulha Canina
       createPawPatrolTheme();
 
-      // Tentar reproduzir automaticamente (alguns navegadores bloqueiam)
+      // Tentar reproduzir automaticamente IMEDIATAMENTE
+      playMusic();
+
+      // Tentar novamente após um pequeno delay
       setTimeout(() => {
-        playMusic();
-      }, 1000);
+        if (!isPlaying) {
+          playMusic();
+        }
+      }, 100);
+
+      // Tentar mais uma vez
+      setTimeout(() => {
+        if (!isPlaying) {
+          playMusic();
+        }
+      }, 500);
     });
 
-    // Criar tema musical da Patrulha Canina usando Web Audio API
+    // Tentar tocar assim que a página carrega (sem esperar DOMContentLoaded)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (!isPlaying) {
+          createPawPatrolTheme();
+          playMusic();
+        }
+      }, 50);
+    });
+
+    // Forçar reprodução em qualquer interação mínima
+    const autoPlayEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove', 'mouseenter'];
+    autoPlayEvents.forEach(event => {
+      document.addEventListener(event, () => {
+        if (!isPlaying) {
+          playMusic();
+        }
+      }, { once: true });
+    });
+
+    // Criar "Música da Amizade" inspirada na Patrulha Canina
     function createPawPatrolTheme() {
       try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        // Sequência de notas do tema da Patrulha Canina (simplificada)
-        const notes = [
-          {freq: 523.25, duration: 0.3}, // C5
-          {freq: 587.33, duration: 0.3}, // D5
-          {freq: 659.25, duration: 0.3}, // E5
+        // Melodia alegre e animada inspirada na "Música da Amizade"
+        const friendshipMelody = [
+          // Primeira parte - alegre e animada
+          {freq: 523.25, duration: 0.4}, // C5
+          {freq: 659.25, duration: 0.4}, // E5
+          {freq: 783.99, duration: 0.4}, // G5
+          {freq: 659.25, duration: 0.4}, // E5
           {freq: 698.46, duration: 0.6}, // F5
+          {freq: 659.25, duration: 0.4}, // E5
+          {freq: 587.33, duration: 0.8}, // D5
+          {freq: 0, duration: 0.2}, // Pausa
+
+          // Segunda parte - mais animada
+          {freq: 587.33, duration: 0.4}, // D5
+          {freq: 698.46, duration: 0.4}, // F5
+          {freq: 783.99, duration: 0.4}, // G5
+          {freq: 880.00, duration: 0.6}, // A5
+          {freq: 783.99, duration: 0.4}, // G5
+          {freq: 698.46, duration: 0.4}, // F5
+          {freq: 659.25, duration: 0.8}, // E5
+          {freq: 0, duration: 0.2}, // Pausa
+
+          // Terceira parte - climax
           {freq: 659.25, duration: 0.3}, // E5
-          {freq: 587.33, duration: 0.3}, // D5
-          {freq: 523.25, duration: 0.6}, // C5
-          {freq: 0, duration: 0.5}, // Pausa
+          {freq: 698.46, duration: 0.3}, // F5
+          {freq: 783.99, duration: 0.3}, // G5
+          {freq: 880.00, duration: 0.3}, // A5
+          {freq: 987.77, duration: 0.6}, // B5
+          {freq: 880.00, duration: 0.4}, // A5
+          {freq: 783.99, duration: 0.4}, // G5
+          {freq: 659.25, duration: 1.0}, // E5
+          {freq: 0, duration: 0.4}, // Pausa
+
+          // Final alegre
+          {freq: 523.25, duration: 0.4}, // C5
+          {freq: 659.25, duration: 0.4}, // E5
+          {freq: 783.99, duration: 0.4}, // G5
+          {freq: 1046.50, duration: 0.8}, // C6
+          {freq: 0, duration: 1.0}, // Pausa final
         ];
 
         let currentTime = audioContext.currentTime;
 
-        function playSequence() {
-          notes.forEach((note, index) => {
+        function playFriendshipSong() {
+          friendshipMelody.forEach((note, index) => {
             if (note.freq > 0) {
-              const oscillator = audioContext.createOscillator();
-              const gainNode = audioContext.createGain();
+              // Criar múltiplas vozes para som mais rico
+              for (let voice = 0; voice < 2; voice++) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
 
-              oscillator.connect(gainNode);
-              gainNode.connect(audioContext.destination);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
 
-              oscillator.frequency.setValueAtTime(note.freq, currentTime);
-              oscillator.type = 'triangle';
+                // Primeira voz: melodia principal
+                if (voice === 0) {
+                  oscillator.frequency.setValueAtTime(note.freq, currentTime);
+                  oscillator.type = 'triangle';
+                  gainNode.gain.setValueAtTime(0, currentTime);
+                  gainNode.gain.linearRampToValueAtTime(0.25, currentTime + 0.05); // Volume alto
+                  gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + note.duration);
+                }
+                // Segunda voz: harmonia
+                else {
+                  oscillator.frequency.setValueAtTime(note.freq * 1.25, currentTime); // Quinta acima
+                  oscillator.type = 'sine';
+                  gainNode.gain.setValueAtTime(0, currentTime);
+                  gainNode.gain.linearRampToValueAtTime(0.15, currentTime + 0.05); // Volume médio
+                  gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + note.duration);
+                }
 
-              gainNode.gain.setValueAtTime(0, currentTime);
-              gainNode.gain.linearRampToValueAtTime(0.1, currentTime + 0.05);
-              gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + note.duration);
-
-              oscillator.start(currentTime);
-              oscillator.stop(currentTime + note.duration);
+                oscillator.start(currentTime);
+                oscillator.stop(currentTime + note.duration);
+              }
             }
             currentTime += note.duration;
           });
 
-          // Repetir a sequência
+          // Repetir a música da amizade
           if (isPlaying) {
             setTimeout(() => {
               if (isPlaying) {
                 currentTime = audioContext.currentTime;
-                playSequence();
+                playFriendshipSong();
               }
-            }, (currentTime - audioContext.currentTime) * 1000 + 1000);
+            }, (currentTime - audioContext.currentTime) * 1000 + 500);
           }
         }
 
-        window.pawPatrolAudio = { audioContext, playSequence };
+        window.pawPatrolAudio = { audioContext, playFriendshipSong };
       } catch (e) {
         console.log('Web Audio API não suportada');
       }
@@ -346,8 +420,8 @@
         isPlaying = true;
         musicToggle.textContent = '🔊';
         musicToggle.title = 'Pausar música';
-        window.pawPatrolAudio.playSequence();
-        toast('🎵 Música da Patrulha Canina tocando!');
+        window.pawPatrolAudio.playFriendshipSong();
+        toast('🎵 Música da Amizade - Patrulha Canina tocando!');
       }
     }
 
