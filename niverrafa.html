@@ -131,9 +131,41 @@
     @keyframes driftY{ to{ transform:translateY(100vh) rotate(-360deg)} }
 
     .pause *[data-animated="true"]{animation-play-state:paused !important}
+
+    /* Controle de música */
+    #musicControl{
+      position:fixed; top:20px; right:20px; z-index:1000;
+      background:rgba(30,144,255,.15); backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.2); border-radius:50px;
+      padding:8px; box-shadow:0 4px 12px rgba(0,0,0,.3);
+      transition:all 0.3s ease;
+    }
+    #musicControl:hover{
+      background:rgba(30,144,255,.25); transform:scale(1.05);
+    }
+    #musicToggle{
+      background:none; border:none; font-size:20px; cursor:pointer;
+      color:white; padding:4px 8px; border-radius:50%;
+      transition:all 0.2s ease; display:flex; align-items:center;
+    }
+    #musicToggle:hover{
+      background:rgba(255,255,255,.1); transform:scale(1.1);
+    }
   </style>
 </head>
 <body>
+  <!-- Música da Patrulha Canina -->
+  <audio id="pawPatrolMusic" loop>
+    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
+    <!-- Fallback para navegadores que não suportam o formato -->
+    <p>Seu navegador não suporta áudio HTML5.</p>
+  </audio>
+
+  <!-- Controle de música -->
+  <div id="musicControl" style="position:fixed; top:20px; right:20px; z-index:1000; background:rgba(0,0,0,0.7); padding:10px; border-radius:50px; backdrop-filter:blur(4px);">
+    <button id="musicToggle" style="background:none; border:none; font-size:24px; cursor:pointer; color:white;" title="Pausar/Tocar música">🎵</button>
+  </div>
+
   <div class="confetti" id="confetti"></div>
   <div class="borders" id="borders"></div>
 
@@ -235,6 +267,121 @@
   </svg>
 
   <script>
+    // Música da Patrulha Canina - Controle de áudio
+    const music = document.getElementById('pawPatrolMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    let isPlaying = false;
+
+    // Tentar tocar música automaticamente quando a página carrega
+    document.addEventListener('DOMContentLoaded', () => {
+      // Criar um áudio com tema da Patrulha Canina usando Web Audio API
+      createPawPatrolTheme();
+
+      // Tentar reproduzir automaticamente (alguns navegadores bloqueiam)
+      setTimeout(() => {
+        playMusic();
+      }, 1000);
+    });
+
+    // Criar tema musical da Patrulha Canina usando Web Audio API
+    function createPawPatrolTheme() {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Sequência de notas do tema da Patrulha Canina (simplificada)
+        const notes = [
+          {freq: 523.25, duration: 0.3}, // C5
+          {freq: 587.33, duration: 0.3}, // D5
+          {freq: 659.25, duration: 0.3}, // E5
+          {freq: 698.46, duration: 0.6}, // F5
+          {freq: 659.25, duration: 0.3}, // E5
+          {freq: 587.33, duration: 0.3}, // D5
+          {freq: 523.25, duration: 0.6}, // C5
+          {freq: 0, duration: 0.5}, // Pausa
+        ];
+
+        let currentTime = audioContext.currentTime;
+
+        function playSequence() {
+          notes.forEach((note, index) => {
+            if (note.freq > 0) {
+              const oscillator = audioContext.createOscillator();
+              const gainNode = audioContext.createGain();
+
+              oscillator.connect(gainNode);
+              gainNode.connect(audioContext.destination);
+
+              oscillator.frequency.setValueAtTime(note.freq, currentTime);
+              oscillator.type = 'triangle';
+
+              gainNode.gain.setValueAtTime(0, currentTime);
+              gainNode.gain.linearRampToValueAtTime(0.1, currentTime + 0.05);
+              gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + note.duration);
+
+              oscillator.start(currentTime);
+              oscillator.stop(currentTime + note.duration);
+            }
+            currentTime += note.duration;
+          });
+
+          // Repetir a sequência
+          if (isPlaying) {
+            setTimeout(() => {
+              if (isPlaying) {
+                currentTime = audioContext.currentTime;
+                playSequence();
+              }
+            }, (currentTime - audioContext.currentTime) * 1000 + 1000);
+          }
+        }
+
+        window.pawPatrolAudio = { audioContext, playSequence };
+      } catch (e) {
+        console.log('Web Audio API não suportada');
+      }
+    }
+
+    function playMusic() {
+      if (window.pawPatrolAudio && !isPlaying) {
+        isPlaying = true;
+        musicToggle.textContent = '🔊';
+        musicToggle.title = 'Pausar música';
+        window.pawPatrolAudio.playSequence();
+        toast('🎵 Música da Patrulha Canina tocando!');
+      }
+    }
+
+    function pauseMusic() {
+      if (isPlaying) {
+        isPlaying = false;
+        musicToggle.textContent = '🎵';
+        musicToggle.title = 'Tocar música';
+        if (window.pawPatrolAudio) {
+          window.pawPatrolAudio.audioContext.suspend();
+        }
+        toast('🔇 Música pausada');
+      }
+    }
+
+    // Controle do botão de música
+    musicToggle.addEventListener('click', () => {
+      if (isPlaying) {
+        pauseMusic();
+      } else {
+        if (window.pawPatrolAudio) {
+          window.pawPatrolAudio.audioContext.resume();
+        }
+        playMusic();
+      }
+    });
+
+    // Interação do usuário para permitir áudio (necessário em alguns navegadores)
+    document.addEventListener('click', () => {
+      if (!isPlaying && window.pawPatrolAudio) {
+        playMusic();
+      }
+    }, { once: true });
+
     // Util: gerar confete animado
     const confettiEl = document.getElementById('confetti');
     const COLORS = ['#1e90ff','#67b3ff','#fbbf24','#ef4444','#22d3ee'];
