@@ -132,24 +132,25 @@
 
     .pause *[data-animated="true"]{animation-play-state:paused !important}
 
-    /* Controle de música */
+    /* Controle de música - discreto */
     #musicControl{
-      position:fixed; top:20px; right:20px; z-index:1000;
-      background:rgba(30,144,255,.15); backdrop-filter:blur(8px);
-      border:1px solid rgba(255,255,255,.2); border-radius:50px;
-      padding:8px; box-shadow:0 4px 12px rgba(0,0,0,.3);
-      transition:all 0.3s ease;
+      position:fixed; bottom:20px; right:20px; z-index:1000;
+      background:rgba(0,0,0,.4); backdrop-filter:blur(4px);
+      border:1px solid rgba(255,255,255,.1); border-radius:50%;
+      padding:6px; box-shadow:0 2px 8px rgba(0,0,0,.2);
+      transition:all 0.3s ease; opacity:0.6;
     }
     #musicControl:hover{
-      background:rgba(30,144,255,.25); transform:scale(1.05);
+      opacity:1; background:rgba(0,0,0,.6); transform:scale(1.05);
     }
     #musicToggle{
-      background:none; border:none; font-size:20px; cursor:pointer;
-      color:white; padding:4px 8px; border-radius:50%;
+      background:none; border:none; font-size:16px; cursor:pointer;
+      color:#cfe2ff; padding:4px; border-radius:50%;
       transition:all 0.2s ease; display:flex; align-items:center;
+      width:24px; height:24px; justify-content:center;
     }
     #musicToggle:hover{
-      background:rgba(255,255,255,.1); transform:scale(1.1);
+      color:white; background:rgba(255,255,255,.1);
     }
   </style>
 </head>
@@ -161,9 +162,9 @@
     <p>Seu navegador não suporta áudio HTML5.</p>
   </audio>
 
-  <!-- Controle de música -->
-  <div id="musicControl" style="position:fixed; top:20px; right:20px; z-index:1000; background:rgba(0,0,0,0.7); padding:10px; border-radius:50px; backdrop-filter:blur(4px);">
-    <button id="musicToggle" style="background:none; border:none; font-size:24px; cursor:pointer; color:white;" title="Pausar/Tocar música">🎵</button>
+  <!-- Controle de música discreto -->
+  <div id="musicControl">
+    <button id="musicToggle" title="Pausar/Tocar música">🎵</button>
   </div>
 
   <div class="confetti" id="confetti"></div>
@@ -272,48 +273,59 @@
     const musicToggle = document.getElementById('musicToggle');
     let isPlaying = false;
 
-    // Tocar música automaticamente quando a página carrega
+    // Inicializar música imediatamente
+    let musicInitialized = false;
+
+    function initializeMusic() {
+      if (!musicInitialized) {
+        createPawPatrolTheme();
+        musicInitialized = true;
+      }
+    }
+
+    // Tocar música automaticamente - múltiplas estratégias
     document.addEventListener('DOMContentLoaded', () => {
-      // Criar a Música da Amizade da Patrulha Canina
-      createPawPatrolTheme();
+      initializeMusic();
 
-      // Tentar reproduzir automaticamente IMEDIATAMENTE
-      playMusic();
-
-      // Tentar novamente após um pequeno delay
-      setTimeout(() => {
-        if (!isPlaying) {
-          playMusic();
-        }
-      }, 100);
-
-      // Tentar mais uma vez
-      setTimeout(() => {
-        if (!isPlaying) {
-          playMusic();
-        }
-      }, 500);
+      // Tentar tocar imediatamente
+      setTimeout(() => playMusic(), 10);
+      setTimeout(() => playMusic(), 100);
+      setTimeout(() => playMusic(), 500);
+      setTimeout(() => playMusic(), 1000);
     });
 
-    // Tentar tocar assim que a página carrega (sem esperar DOMContentLoaded)
+    // Tentar logo que a página carrega
     window.addEventListener('load', () => {
-      setTimeout(() => {
-        if (!isPlaying) {
-          createPawPatrolTheme();
-          playMusic();
-        }
-      }, 50);
+      initializeMusic();
+      setTimeout(() => playMusic(), 10);
     });
 
-    // Forçar reprodução em qualquer interação mínima
-    const autoPlayEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove', 'mouseenter'];
+    // Tentar quando o script executa
+    setTimeout(() => {
+      initializeMusic();
+      playMusic();
+    }, 10);
+
+    // Autoplay em qualquer interação
+    const autoPlayEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove', 'mouseenter', 'focus', 'blur'];
     autoPlayEvents.forEach(event => {
       document.addEventListener(event, () => {
         if (!isPlaying) {
+          initializeMusic();
           playMusic();
         }
       }, { once: true });
     });
+
+    // Tentar tocar a cada 2 segundos até conseguir
+    const autoPlayInterval = setInterval(() => {
+      if (!isPlaying) {
+        initializeMusic();
+        playMusic();
+      } else {
+        clearInterval(autoPlayInterval);
+      }
+    }, 2000);
 
     // Criar "Música da Amizade" inspirada na Patrulha Canina
     function createPawPatrolTheme() {
