@@ -204,7 +204,7 @@
           <div>📅</div>
           <div>
             <div class="badge">Sábado, 18/10/2025</div>
-            <div class="note">Início às <strong>11h</strong></div>
+            <div class="note">Início às <strong>12h</strong></div>
           </div>
         </div>
         <div class="row">
@@ -434,11 +434,11 @@
         'BEGIN:VEVENT',
         'UID:'+crypto.randomUUID(),
         'DTSTAMP:'+toICS(new Date()),
-        'DTSTART;TZID=America/Sao_Paulo:20251018T110000',
+        'DTSTART;TZID=America/Sao_Paulo:20251018T120000',
         'DURATION:PT4H',
         'SUMMARY:Aniversário do Rafinha – 5 anos (Patrulha Canina)',
         'LOCATION:Av. Américo Tornero\, 468 – Jardim Mauá\, Mauá/SP – CEP 09340-000',
-        'DESCRIPTION:Início às 11h. Piscina aquecida! Levar roupa de banho. Se o tempo estiver ruim\, a piscina é coberta; se fizer sol\, o teto abre. 🐾',
+        'DESCRIPTION:Início às 12h. Piscina aquecida! Levar roupa de banho. A Patrulha Canina está sempre de olho na piscina para garantir a diversão! 🐾',
         'END:VEVENT',
         'END:VCALENDAR' ].join('\r\n');
       const blob = new Blob([ics], {type:'text/calendar'});
@@ -452,7 +452,7 @@
 
     // Compartilhar
     document.getElementById('share').addEventListener('click', async ()=>{
-      const data = {title:'Aniversário do Rafinha – 5 anos', text:'Vem para a festa! Sábado, 18/10/2025 às 11h. Piscina aquecida. Endereço: Av. Américo Tornero, 468 – Jardim Mauá, Mauá/SP.', url: location.href};
+      const data = {title:'Aniversário do Rafa – 5 anos', text:'Vem para a festa! Sábado, 18/10/2025 às 12h. Piscina aquecida. Endereço: Av. Américo Tornero, 468 – Jardim Mauá, Mauá/SP.', url: location.href};
       if(navigator.share){ try{ await navigator.share(data); } catch(e){} } else { toast('Compartilhamento não suportado neste dispositivo'); }
     });
 
