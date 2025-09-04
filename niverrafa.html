@@ -52,31 +52,31 @@
     /* Piscina */
     .pool-wrap{position:relative;}
     .paw-patrol-video{
-      position:absolute; inset:0 0 auto 0; height:52%;
-      border-radius:16px 16px 0 0; overflow:hidden;
+      position:absolute; inset:0; /* Ocupa todo o quadrado */
+      border-radius:16px; overflow:hidden;
       background:linear-gradient(135deg, #87CEEB 0%, #4169E1 100%);
       border:2px solid #FFD700;
       z-index:10;
-      animation:videoShow 8s ease-in-out infinite;
+      animation:videoShow 20s ease-in-out infinite; /* Ciclo mais longo */
     }
 
     #pawPatrolVideo{
       width:100%; height:100%; object-fit:cover;
-      border-radius:14px 14px 0 0;
+      border-radius:14px;
       opacity:0;
-      animation:videoFadeIn 8s ease-in-out infinite;
+      animation:videoFadeIn 20s ease-in-out infinite; /* Ciclo mais longo */
     }
 
     @keyframes videoShow{
-      0%,20%{transform:translateY(-100%)}
-      30%,70%{transform:translateY(0)}
-      80%,100%{transform:translateY(-100%)}
+      0%,10%{transform:translateY(-100%)} /* Começa escondido */
+      15%,75%{transform:translateY(0)} /* Fica visível por 60% do tempo (12 segundos) */
+      85%,100%{transform:translateY(-100%)} /* Esconde novamente */
     }
 
     @keyframes videoFadeIn{
-      0%,25%{opacity:0}
-      35%,65%{opacity:1}
-      75%,100%{opacity:0}
+      0%,12%{opacity:0} /* Fade in */
+      18%,72%{opacity:1} /* Totalmente visível por tempo maior */
+      82%,100%{opacity:0} /* Fade out */
     }
 
     .pool{height:320px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.1); background:#0d244a; position:relative}
@@ -184,7 +184,7 @@
     <section class="card grid">
       <div class="pool-wrap">
         <div class="paw-patrol-video" data-animated="true">
-          <video id="pawPatrolVideo" autoplay muted loop playsinline>
+          <video id="pawPatrolVideo" autoplay loop playsinline>
             <source src="IMG_1147.MP4" type="video/mp4">
             Seu navegador não suporta vídeo HTML5.
           </video>
@@ -260,18 +260,32 @@
     const video = document.getElementById('pawPatrolVideo');
     let isPlaying = false;
 
-    // Configurar volume alto
-    music.volume = 0.8;
-
-    // Configurar vídeo
-    video.volume = 0; // Vídeo sem som para não conflitar com a música
+    // Configurar volumes
+    music.volume = 0.6; // Música um pouco mais baixa
+    video.volume = 0.7; // Vídeo com áudio
 
     // Função para tocar vídeo
     function playVideo() {
-      video.play().catch(error => {
+      video.play().then(() => {
+        console.log('Vídeo iniciado com sucesso');
+      }).catch(error => {
         console.log('Autoplay do vídeo bloqueado:', error);
+        // Tentar novamente sem áudio se necessário
+        video.muted = true;
+        video.play();
       });
     }
+
+    // Controlar áudio quando vídeo está visível
+    video.addEventListener('play', () => {
+      // Diminuir volume da música quando vídeo toca
+      music.volume = 0.3;
+    });
+
+    video.addEventListener('pause', () => {
+      // Restaurar volume da música quando vídeo pausa
+      music.volume = 0.6;
+    });
 
     // Tocar música e vídeo automaticamente - múltiplas estratégias
     document.addEventListener('DOMContentLoaded', () => {
